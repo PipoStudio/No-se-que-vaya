@@ -1,0 +1,12 @@
+[build]
+  publish = "." 
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/juego/*"
+  to = "/Game/keepYourSheep/:splat"
+<<<<<<< HEAD
+  status = 200
+=======
+  status = 200
+>>>>>>> 8567cb14bad72124bf84c2d0b463daf30dc05697

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>En construcción</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Georgia", "Times New Roman", serif;
+      background-color: #f9f9f9;
+      color: #222;
+    }
+
+    .page-center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 80px);
+    }
+
+    .mensaje {
+      font-size: 3rem;
+      font-weight: bold;
+      text-align: center;
+      max-width: 800px;
+      line-height: 1.4;
+      border-top: 3px solid #222;
+      border-bottom: 3px solid #222;
+      padding: 2rem;
+      background-color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/ofertas.css">
+</head>
+
+<body>
+
+<nav class="navbar navbar-glass">
+    <div class="logo">
+        <i data-lucide="circle"></i> GEEKWAVE
+    </div>
+    
+    <div class="nav-links" id="navLinks">
+        <a href="index.html" class="active">Home</a>
+        <div class="nav-item-dropdown">
+            <a href="#" id="productosBtn">Productos <i data-lucide="chevron-down" style="width: 14px; vertical-align: middle;"></i></a>
+            
+            <div class="mega-menu" id="productosMenu" data-lenis-prevent>
+                <div class="menu-container">
+                    <div class="menu-col" id="col-categories">
+                        <span class="menu-label">Categoría</span>
+                        <ul class="menu-list" id="list-categories"></ul>
+                    </div>
+                    <div class="menu-col hidden" id="col-subcategories">
+                        <span class="menu-label">Plataforma / Tipo</span>
+                        <ul class="menu-list" id="list-subcategories"></ul>
+                    </div>
+                    <div class="menu-col hidden" id="col-products">
+                        <span class="menu-label">Productos disponibles</span>
+                        <ul class="menu-list" id="list-products"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="ofertas.html">Ofertas</a>
+        <a href="contacto.html">Contacto</a>
+        <a href="soporte.html">Soporte</a>
+    </div>
+    
+    <div class="nav-icons">
+        <div class="search-container" id="searchContainer">
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar retro-tech, consolas...">
+            <button class="icon-btn filter-btn" id="filterBtn">
+                <i data-lucide="sliders-horizontal"></i>
+            </button>
+            <button class="icon-btn search-btn" id="searchBtn"><i data-lucide="search"></i></button>
+            
+            <div class="filter-panel" id="filterPanel" onclick="event.stopPropagation();">
+                <div class="filter-header">Filtros de Búsqueda</div>
+                <div class="filter-group">
+                    <label>Categoría</label>
+                    <select id="filterCategory">
+                        <option value="Todo" selected>Todo</option>
+                        <option value="Consolas">Consolas</option>
+                        <option value="Juegos">Juegos</option>
+                        <option value="Accesorios">Accesorios</option>
+                        <option value="Preventas">Preventas</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Precio</label>
+                    <select id="filterPrice">
+                        <option value="all" selected>Cualquier precio</option>
+                        <option value="under50">Menos de $50</option>
+                        <option value="50to150">De $50 a $150</option>
+                        <option value="over150">Más de $150</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Ordenar por</label>
+                    <select id="filterSort">
+                        <option value="relevance" selected>Relevancia</option>
+                        <option value="az">Nombre (A - Z)</option>
+                        <option value="priceAsc">Precio: Menor a Mayor</option>
+                        <option value="priceDesc">Precio: Mayor a Menor</option>
+                        <option value="newest">Más recientes (Año)</option>
+                    </select>
+                </div>
+                <button id="applyFiltersBtn" class="btn-primary" style="width: 100%; padding: 0.8rem; margin-top: 10px; font-size: 0.85rem; border: none; border-radius: 8px;">Aplicar Filtros</button>
+            </div>
+            <div class="search-results" id="searchResults" data-lenis-prevent></div>
+        </div>
+
+        <div class="user-nav-container" style="position: relative; display: inline-flex;">
+            <button class="icon-btn" id="userBtn" onclick="window.location.href='login.html'">
+                <i data-lucide="user"></i>
+            </button>
+            <span class="user-badge" id="userBadge"></span>
+            <div class="user-tooltip" id="userTooltip">Inicia sesión para finalizar tu orden</div>
+        </div>
+
+        <div class="cart-nav-container" style="position: relative; display: inline-flex;">
+            <button class="icon-btn" id="cartBtn"><i data-lucide="shopping-bag"></i></button>
+            <span class="cart-badge" id="cartBadge">0</span>
+            
+            <div class="cart-dropdown" id="cartDropdown" onclick="event.stopPropagation();">
+                <div class="cart-header">
+                    <h3>Tu Carrito</h3>
+                    <button class="close-cart" id="closeCartBtn"><i data-lucide="x"></i></button>
+                </div>
+                
+                <div class="cart-items" id="cartItemsContainer" data-lenis-prevent"></div>
+                
+                <div class="cart-footer">
+                    <button onclick="window.location.href='pago.html'" class="btn-primary" style="width: 100%; padding: 12px; margin-bottom: 10px; border: none; font-size: 0.9rem;">Ir a pagar</button>
+                    <button id="saveCartBtn" class="btn-outline" style="width: 100%; padding: 12px; font-size: 0.9rem; text-align: center;">Guardar</button>
+                </div>
+                <div id="toastMsg" class="toast-msg">Eliminado</div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="dropdown-productos"></div>
+
+<div class="page-center">
+  <div class="mensaje">
+    Estamos trabajando en ello.<br>
+    Vuelva pronto para comprar.<br>
+    ¡Gracias!
+  </div>
+</div>
+
+<script src="js/ofertas.js"></script>
+<script src="js/script.js"></script>
+
+</body>
+</html>

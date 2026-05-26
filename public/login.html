@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro | Geekwave</title>
+    <link rel="stylesheet" >
+    <style>
+        body { display: flex; align-items: center; justify-content: center; height: 100vh; background: #050505; color: #fff; text-align: center; font-family: 'Space Grotesk', sans-serif; }
+        .login-card { background: #111; padding: 50px; border-radius: 20px; border: 1px solid #222; max-width: 400px; }
+        h1 { font-size: 2rem; margin-bottom: 20px; }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 30px; }
+        .btn-yes { background: #00ff7f; color: #000; padding: 15px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; }
+        .btn-no { background: transparent; color: #fff; padding: 15px; border-radius: 10px; border: 1px solid #222; cursor: pointer; }
+    </style>
+
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/login.css">
+
+</head>
+<body>
+<nav class="navbar navbar-glass">
+        <div class="logo">
+            <i data-lucide="circle"></i> GEEKWAVE
+        </div>
+        
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="active">Home</a>
+            <div class="nav-item-dropdown">
+                <a href="#" id="productosBtn">Productos <i data-lucide="chevron-down" style="width: 14px; vertical-align: middle;"></i></a>
+                
+                <div class="mega-menu" id="productosMenu" data-lenis-prevent>
+                    <div class="menu-container">
+                        <div class="menu-col" id="col-categories">
+                            <span class="menu-label">Categoría</span>
+                            <ul class="menu-list" id="list-categories"></ul>
+                        </div>
+                        <div class="menu-col hidden" id="col-subcategories">
+                            <span class="menu-label">Plataforma / Tipo</span>
+                            <ul class="menu-list" id="list-subcategories"></ul>
+                        </div>
+                        <div class="menu-col hidden" id="col-products">
+                            <span class="menu-label">Productos disponibles</span>
+                            <ul class="menu-list" id="list-products"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="ofertas.html">Ofertas</a>
+            <a href="contacto.html">Contacto</a>
+            <a href="soporte.html">Soporte</a>
+        </div>
+        
+        <div class="nav-icons">
+            <div class="search-container" id="searchContainer">
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar retro-tech, consolas...">
+                <button class="icon-btn filter-btn" id="filterBtn" title="Filtros">
+                    <i data-lucide="sliders-horizontal"></i>
+                </button>
+                <button class="icon-btn search-btn" id="searchBtn"><i data-lucide="search"></i></button>
+                
+                <div class="filter-panel" id="filterPanel" onclick="event.stopPropagation();">
+                    <div class="filter-header">Filtros de Búsqueda</div>
+                    <div class="filter-group">
+                        <label>Categoría</label>
+                        <select id="filterCategory">
+                            <option value="Todo" selected>Todo</option>
+                            <option value="Consolas">Consolas</option>
+                            <option value="Juegos">Juegos</option>
+                            <option value="Accesorios">Accesorios</option>
+                            <option value="Preventas">Preventas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Precio</label>
+                        <select id="filterPrice">
+                            <option value="all" selected>Cualquier precio</option>
+                            <option value="under50">Menos de $50</option>
+                            <option value="50to150">De $50 a $150</option>
+                            <option value="over150">Más de $150</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Ordenar por</label>
+                        <select id="filterSort">
+                            <option value="relevance" selected>Relevancia</option>
+                            <option value="az">Nombre (A - Z)</option>
+                            <option value="priceAsc">Precio: Menor a Mayor</option>
+                            <option value="priceDesc">Precio: Mayor a Menor</option>
+                            <option value="newest">Más recientes (Año)</option>
+                        </select>
+                    </div>
+                    <button id="applyFiltersBtn" class="btn-primary" style="width: 100%; padding: 0.8rem; margin-top: 10px; font-size: 0.85rem; border: none; border-radius: 8px;">Aplicar Filtros</button>
+                </div>
+                <div class="search-results" id="searchResults" data-lenis-prevent></div>
+            </div>
+
+            <div class="user-nav-container" style="position: relative; display: inline-flex;">
+                <button class="icon-btn" id="userBtn" onclick="window.location.href='login.html'">
+                    <i data-lucide="user"></i>
+                </button>
+                <span class="user-badge" id="userBadge"></span>
+                <div class="user-tooltip" id="userTooltip">Inicia sesión para finalizar tu orden</div>
+            </div>
+
+
+
+           <div class="cart-nav-container" style="position: relative; display: inline-flex;">
+                <button class="icon-btn" id="cartBtn"><i data-lucide="shopping-bag"></i></button>
+                <span class="cart-badge" id="cartBadge">0</span>
+                
+                <div class="cart-dropdown" id="cartDropdown" onclick="event.stopPropagation();">
+                    <div class="cart-header">
+                        <h3>Tu Carrito</h3>
+                        <button class="close-cart" id="closeCartBtn"><i data-lucide="x"></i></button>
+                    </div>
+                    
+                    <div class="cart-items" id="cartItemsContainer" data-lenis-prevent>
+                        </div>
+                    
+                   <div class="cart-footer">
+                        <button onclick="window.location.href='pago.html'" class="btn-primary" style="width: 100%; padding: 12px; margin-bottom: 10px; border: none; font-size: 0.9rem;">Ir a pagar</button>
+                        <button id="saveCartBtn" class="btn-outline" style="width: 100%; padding: 12px; font-size: 0.9rem; text-align: center;">Guardar</button>
+                    </div>
+                    <div id="toastMsg" class="toast-msg">Eliminado</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+<div class="dropdown-productos"></div>
+
+    <div class="login-card">
+        <h1>¿Te quieres registrar?</h1>
+        <p>Inicia sesión para mantener tus productos seguros y finalizar tu compra.</p>
+        <div class="btn-group">
+            <button class="btn-yes" onclick="setLogin(true)">Sí, sí quiero</button>
+            <button class="btn-no" onclick="setLogin(false)">No, gracias</button>
+        </div>
+    </div>
+
+    <script>
+        function setLogin(status) {
+            // Solo modificamos esta llave, la canasta (geekwave_cart) se queda intacta
+            localStorage.setItem('geekwave_logged_in', status);
+            window.location.href = 'index.html';
+        }
+    </script>
+
+
+<script src="js/login.js"></script>
+
+<script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Geekwave Engineering</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+        :root {
+            --bg: #050505; --card: #0e0e0e; --accent: #00ff7f; --border: #1a1a1a;
+            --text-dim: #888888; --radius: 24px;
+        }
+
+        body {
+            background: var(--bg); color: white; font-family: 'Manrope', sans-serif;
+            margin: 0; padding-top: 100px;
+        }
+
+        /* NAVBAR - LOGO 26PX FIJO */
+        .navbar {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(5,5,5,0.8); backdrop-filter: blur(20px);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 5%; z-index: 2000; border-bottom: 1px solid var(--border);
+            box-sizing: border-box;
+        }
+        .nav-logo-custom { height: 26px !important; width: auto; }
+        .nav-links a { color: var(--accent); text-decoration: none; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .checkout-wrapper { max-width: 1250px; margin: 0 auto; padding: 0 5% 100px; }
+        .checkout-grid { display: grid; grid-template-columns: 1fr 400px; gap: 60px; }
+
+        /* ACORDEÓN TAMAÑO ORIGINAL */
+        .accordion-step { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 25px; }
+        .step-header { padding: 35px; display: flex; align-items: center; gap: 20px; cursor: pointer; }
+        .step-number { width: 40px; height: 40px; background: #151515; color: var(--accent); display: flex; align-items: center; justify-content: center; border-radius: 50%; font-family: 'Space Grotesk'; font-weight: 800; font-size: 1.1rem; }
+        .step-content { max-height: 0; opacity: 0; overflow: hidden; padding: 0 35px; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .accordion-step.active .step-content { max-height: 1200px; opacity: 1; padding-bottom: 45px; }
+
+        /* SELECTORES (CONTACTO Y PAGO) */
+        .selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 25px 0; }
+        .select-card { 
+            background: #111; border: 1px solid var(--border); padding: 22px; 
+            border-radius: 16px; text-align: center; cursor: pointer; transition: 0.3s;
+        }
+        .select-card i { display: block; font-size: 1.5rem; margin-bottom: 10px; }
+        .select-card.active { border-color: var(--accent); background: rgba(0,255,127,0.05); color: var(--accent); }
+
+        /* INPUTS ORIGINALES */
+        .field { margin-bottom: 25px; }
+        .field label { display: block; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 10px; font-weight: 800; letter-spacing: 1.5px; }
+        .field input { width: 100%; background: #111; border: 1px solid var(--border); padding: 18px; border-radius: 12px; color: white; box-sizing: border-box; font-size: 1rem; }
+        .field input:focus { border-color: var(--accent); outline: none; }
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        /* ORDEN / RESUMEN*/
+        .summary-card { background: var(--card); border: 1px solid var(--border); padding: 40px; border-radius: var(--radius); position: sticky; top: 120px; }
+        .summary-header { font-family: 'Space Grotesk'; font-size: 1.5rem; margin-bottom: 30px; font-weight: 800; }
+        
+        .order-item { display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 16px; margin-bottom: 30px; border: 1px solid var(--border); }
+        .order-item img { width: 80px; height: 80px; object-fit: contain; background: #000; border-radius: 12px; }
+        .item-details h4 { margin: 0; font-size: 1.1rem; }
+        .item-details p { margin: 5px 0 0; font-size: 0.95rem; color: var(--accent); font-weight: 800; }
+
+        .price-calc { border-top: 1px dashed var(--border); padding-top: 25px; }
+        .calc-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1rem; color: var(--text-dim); }
+        .calc-row.total { color: white; font-weight: 800; font-size: 1.5rem; margin-top: 20px; padding-top: 25px; border-top: 1px solid var(--border); }
+        .calc-row.total span:last-child { color: var(--accent); font-family: 'Space Grotesk'; }
+
+        /* TOGGLE NEÓN ORIGINAL */
+        .save-container { display: flex; justify-content: space-between; align-items: center; background: #151515; padding: 22px; border-radius: 16px; margin-top: 30px; border: 1px solid var(--border); }
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* BOTÓN DE PAGO FINAL */
+        .btn-pay { 
+            width: 100%; padding: 22px; border-radius: 60px; border: none; font-family: 'Space Grotesk'; 
+            font-weight: 800; font-size: 1.1rem; margin-top: 35px; transition: 0.3s;
+            background: #252525; color: #555; pointer-events: none;
+        }
+        .btn-pay.ready { background: white; color: black; pointer-events: auto; cursor: pointer; }
+        .btn-pay.ready:hover { background: var(--accent); transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,255,127,0.3); }
+
+        @media (max-width: 1000px) { .checkout-grid { grid-template-columns: 1fr; gap: 40px; } }
+    </style>
+</head>
+<body>
+
+
+    <nav class="navbar">
+        <div class="logo">
+            <a href="index.html">
+                <img src="https://res.cloudinary.com/djeljniac/image/upload/v1777446530/logouu_go6wr5.webp" alt="GEEKWAVE" class="nav-logo-custom">
+            </a>
+</div>
+        <div class="nav-links"><a href="index.html">Regresar al catálogo</a></div>
+    </nav>
+
+    <div class="checkout-wrapper">
+        <div class="checkout-grid">
+            
+            <div class="steps-area">
+                <!-- PASO 1 -->
+                <div class="accordion-step active" id="step1">
+                    <div class="step-header" onclick="toggleStep(1)">
+                        <span class="step-number">01</span>
+                        <h3 style="margin:0; font-family:'Space Grotesk'; font-size:1.3rem; letter-spacing:1px;">LOGÍSTICA Y CONTACTO</h3>
+                    </div>
+                    <div class="step-content">
+                        <div class="input-grid">
+                            <div class="field"><label>Nombre</label><input type="text" class="v-field" placeholder="Douglas Osorio"></div>
+                            <div class="field"><label>Email</label><input type="email" class="v-field" placeholder="douglas@geekwave.com"></div>
+                        </div>
+                        <div class="field"><label>Dirección de Envío</label><input type="text" class="v-field" placeholder="Avenida Principal, Edificio Tech"></div>
+                        
+    <div class="field">
+                            <label>Preferencia de Contacto</label>
+                            <div class="selector-grid" style="grid-template-columns: 1fr 1fr;">
+                                <div class="select-card active" onclick="selectItem(this, 'contact')"><i class="fa-brands fa-whatsapp"></i> WhatsApp</div>
+                                <div class="select-card" onclick="selectItem(this, 'contact')"><i class="fa-solid fa-comment-sms"></i> SMS</div>
+        </div>
+                        </div>
+                        <button class="btn-pay ready" onclick="toggleStep(2)" style="background:var(--accent); color:black;">CONTINUAR AL PAGO</button>
+    </div>
+</div>
+
+                <!-- PASO 2 -->
+                <div class="accordion-step" id="step2">
+                    <div class="step-header" onclick="toggleStep(2)">
+                        <span class="step-number">02</span>
+                        <h3 style="margin:0; font-family:'Space Grotesk'; font-size:1.3rem; letter-spacing:1px;">PASARELA DE PAGO</h3>
+                    </div>
+                    <div class="step-content">
+                        <div class="selector-grid">
+                            <div class="select-card active" onclick="updatePayment('card', this)"><i class="fa-solid fa-credit-card"></i> Tarjeta</div>
+                            <div class="select-card" onclick="updatePayment('paypal', this)"><i class="fa-brands fa-paypal"></i> PayPal</div>
+                            <div class="select-card" onclick="updatePayment('bitcoin', this)"><i class="fa-brands fa-bitcoin"></i> Bitcoin</div>
+                        </div>
+
+                        <div id="payment-fields" style="background:rgba(255,255,255,0.02); padding:30px; border-radius:16px; border:1px dashed var(--border);">
+                            <!-- Contenido Dinámico -->
+                        </div>
+
+                        <div class="save-container">
+                            <div>
+                                <div style="font-size:1rem; font-weight:700; color:var(--accent);">Cifrar Información</div>
+                                <div style="font-size:0.8rem; color:var(--text-dim);">Guardar datos para compras futuras rápidas.</div>
+                            </div>
+                            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESUMEN MAQUETADO -->
+            <aside class="summary-area">
+                <div class="summary-card">
+                    <div class="summary-header">TU PEDIDO</div>
+                    
+                    <div class="order-item">
+                        <img src="https://res.cloudinary.com/dn8pns203/image/upload/v1777401872/geekwave_catalog/vybuwhqgbpi4hi4nxom4.webp" alt="Analogue Pocket">
+                        <div class="item-details">
+                            <h4>Analogue Pocket</h4>
+                            <p>$219.99</p>
+                        </div>
+                    </div>
+
+                    <div class="price-calc">
+                        <div class="calc-row"><span>Subtotal</span><span>$219.99</span></div>
+                        <div class="calc-row"><span>Logística Prioritaria</span><span style="color:var(--accent); font-weight:800;">GRATIS</span></div>
+                        <div class="calc-row.total"><span>TOTAL</span><span>$219.99</span></div>
+                    </div>
+
+                    <button id="mainActionBtn" class="btn-pay">COMPLETA LOS DATOS</button>
+                    <div style="text-align:center; margin-top:25px; font-size:0.7rem; color:#444; letter-spacing:1px; font-weight:700;">
+                        <i class="fa-solid fa-shield-virus" style="color:var(--accent);"></i> SECURITY PROTOCOL AES-256
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        const payFields = document.getElementById('payment-fields');
+        const mainBtn = document.getElementById('mainActionBtn');
+
+        const forms = {
+            card: `
+                <div class="field"><label>Número de Tarjeta</label><input type="text" class="v-field" placeholder="0000 0000 0000 0000"></div>
+                <div class="input-grid">
+                    <div class="field"><label>Expiración</label><input type="text" class="v-field" placeholder="MM/AA"></div>
+                    <div class="field"><label>CVC</label><input type="password" class="v-field" placeholder="***"></div>
+                </div>`,
+            paypal: `<div class="field"><label>Cuenta PayPal</label><input type="email" class="v-field" placeholder="usuario@paypal.com"></div>`,
+            bitcoin: `<div style="text-align:center; padding:20px;"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" style="border:5px solid white; border-radius:12px; margin-bottom:15px;"><div class="field"><label>Dirección Wallet BTC</label><input type="text" value="bc1qxy2kgdy..." readonly style="text-align:center; font-size:0.8rem; color:var(--accent); background:#000;"></div></div>`
+        };
+
+        function toggleStep(n) {
+            document.querySelectorAll('.accordion-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step'+n).classList.add('active');
+        }
+
+        function selectItem(el, group) {
+            el.parentElement.querySelectorAll('.select-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function updatePayment(type, el) {
+            selectItem(el);
+            payFields.innerHTML = forms[type];
+            initValidation();
+        }
+
+        function initValidation() {
+            const inputs = document.querySelectorAll('.v-field');
+            const validate = () => {
+                let allOk = true;
+                inputs.forEach(i => { if(i.value.trim() === "") allOk = false; });
+                if(allOk) {
+                    mainBtn.classList.add('ready');
+                    mainBtn.innerText = "CONFIRMAR PEDIDO";
+                } else {
+                    mainBtn.classList.remove('ready');
+                    mainBtn.innerText = "COMPLETA LOS DATOS";
+                }
+            };
+            inputs.forEach(i => i.addEventListener('input', validate));
+        }
+
+        updatePayment('card', document.querySelector('.select-card'));
+    </script>
+
+<div id="transition-overlay" class="transition-overlay">
+    <div class="transition-content">
+        <h2 class="transition-text">Sincronización completa.<br>Procesando pedido seguro...</h2>
+        <div class="apple-spinner"></div>
+    </div>
+</div>
+</body>
+</html>
