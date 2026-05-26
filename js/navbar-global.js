@@ -1,3 +1,11 @@
+// --- NUEVO INICIO: Esperamos a que el cargador inyecte el HTML ---
+document.addEventListener('navbarLoaded', () => {
+    console.log("Navbar inyectado, activando eventos...");
+    
+    // Aquí pegas TODO tu código original de js/navbar-global.js
+    // ... todo tu código desde lucide.createIcons() hasta el final ...
+
+
 // Inicialización de dependencias globales
 lucide.createIcons();
 
@@ -7,6 +15,7 @@ const lenis = new Lenis({
     lerp: 0.08,
     smoothWheel: true,
 });
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- SCROLL TO TOP ---
@@ -621,4 +630,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if(searchInput) searchInput.value = '';
         currentFocus = -1;
     }
+});
+
+// --- NUEVO FINAL: Cerramos la función ---
+    console.log("Eventos del Navbar activados con éxito.");
 });
