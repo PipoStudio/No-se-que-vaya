@@ -5,19 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geekwave | High-End Retro Tech</title>
     
+    <!-- Preload de recursos críticos -->
+    <link rel="preload" href="css/styles.css" as="style">
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;700&family=Space+Grotesk:wght@400;700;800&display=swap" rel="stylesheet">
     
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
+    <!-- Estilos -->
     <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css">
     <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Scripts externos con async (no bloquean renderizado) -->
+    <script src="https://unpkg.com/lucide@latest" async></script>
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" async></script>
 </head>
 <body>
-<div id="nav-placeholder">
-
-</div>
+<div id="nav-placeholder"></div>
     
     <section id="home" class="hero-video-slider">
         <div class="slider-container" id="main-slider">
@@ -211,6 +216,7 @@
         <a href="#" class="btn-outline">Ver detalles</a>
     </div>
 </article>
+            </div>
         </div>
     </section>
 
@@ -235,7 +241,7 @@
                             <div class="bs-main">
                                 <div class="bs-info">
                                     <h2>XBOX<br>SERIES X - 1TB.</h2>
-                                    <p>La consola de Microsoft más rápida de la historia. Disfruta de miles de títulos de cuatro generaciones de consolas con el rendimiento y la fidelidad visual de la nueva generación.</p>
+                                    <p>La consola de Microsoft más rápida de la historia. Disfruta de miles de títulos de cuatro generaciones de consolas con el rendimiento y la fidelidad visu[...]
                                 </div>
                                 <div class="bs-action">
                                     <a href="#" class="btn-primary btn-white">Ver detalles</a>
@@ -277,7 +283,7 @@
                 <div class="bs-slide">
                     <div class="best-seller-card">
                         <div class="best-seller-bg">
-                            <img src="https://assets.nintendo.com/image/upload/q_auto:best/f_auto/dpr_2.0/ncom/en_US/articles/2024/two-classic-tetris-games-are-dropping-onto-the-nes-and-game-boy-libraries/2250x1266_Switch_News_NSO_T" alt="SNES">
+                            <img src="https://assets.nintendo.com/image/upload/q_auto:best/f_auto/dpr_2.0/ncom/en_US/articles/2024/two-classic-tetris-games-are-dropping-onto-the-nes-and-game-boy-[...]
                         </div>
                         <div class="bs-layout">
                             <div class="bs-top">
@@ -305,20 +311,19 @@
     </section>
 
 <div id="footer-placeholder"></div>
-  <script src="js/component-loader.js"></script>
-      <script src="js/geekwave-main.js"></script>
-
-   <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
-    
-    
 
+<!-- ===== SCRIPTS EN ORDEN CORRECTO ===== -->
+<!-- 1️⃣ PRIMERO: Cargar componentes (navbar + footer) -->
+<script src="js/component-loader.js"></script>
 
-    <script src="js/navbar-global.js"></script>
-    <script src="js/index.js"></script>
+<!-- 2️⃣ SEGUNDO: Scripts que dependen del navbar -->
+<script src="js/navbar-global.js" defer></script>
 
+<!-- 3️⃣ TERCERO: Scripts específicos de la página -->
+<script src="js/geekwave-main.js" defer></script>
+<script src="js/index.js" defer></script>
 
-    
-    <script src="js/component-loader.js"></script>
 </body>
 </html>
