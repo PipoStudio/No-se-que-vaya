@@ -1,0 +1,16 @@
+{
+    "pago.js": {
+        "addToCart": "no encontrada",
+        "changeCartQty": "no encontrada",
+        "removeFromCart": "no encontrada",
+        "renderCheckoutCart": "encontrada",
+        "saveCart": "encontrada"
+    },
+    "navbar-global.js": {
+        "addToCart": "no encontrada",
+        "changeCartQty": "no encontrada",
+        "removeFromCart": "no encontrada",
+        "renderCheckoutCart": "no encontrada",
+        "saveCart": "encontrada"
+    }
+}

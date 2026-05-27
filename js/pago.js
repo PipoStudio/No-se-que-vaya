@@ -194,16 +194,16 @@ function getCart() {
     return JSON.parse(localStorage.getItem(CART_KEY)) || [];
 
 }
-
+// En pago.js (y en navbar-global.js)
 function saveCart(cart) {
-
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-
-    renderCheckoutCart();
-
-    syncNavbarCart();
-
+    localStorage.setItem("geekwave_cart", JSON.stringify(cart));
+    
+    // Lanzar evento global para que cualquier componente sepa que el carrito cambió
+    window.dispatchEvent(new CustomEvent('cartUpdated', { 
+        detail: { cart: cart } 
+    }));
 }
+
 
 function renderCheckoutCart() {
 
@@ -939,3 +939,21 @@ style.innerHTML = `
 `;
 
 document.head.appendChild(style);
+
+
+// ESCUCHAR CAMBIOS DEL CARRITO PARA ACTUALIZAR PAGO.HTML AUTOMÁTICAMENTE
+
+// Ouve as alterações feitas pelo navbar
+window.addEventListener('cartUpdated', () => {
+    console.log("Recebi atualização do navbar, redesenhando...");
+    if (typeof renderCheckoutCart === 'function') {
+        renderCheckoutCart();
+    }
+});
+
+// Garante que o evento também funcione em abas diferentes
+window.addEventListener('storage', (e) => {
+    if (e.key === 'geekwave_cart') {
+        renderCheckoutCart();
+    }
+});

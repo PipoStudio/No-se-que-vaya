@@ -120,40 +120,44 @@ function initializeNavbarLogic() {
     }
 
     // ===== FUNCIONES GLOBALES DEL CARRITO =====
-    window.addToCart = function (id, nombre, qty) {
-        let cart = JSON.parse(localStorage.getItem('geekwave_cart')) || [];
-        let existingItem = cart.find(item => parseInt(item.id) === parseInt(id));
-        if (existingItem) {
-            existingItem.qty += parseInt(qty);
-        } else {
-            cart.push({ id: id, nombre: nombre, qty: parseInt(qty) });
-        }
-        localStorage.setItem('geekwave_cart', JSON.stringify(cart));
-        updateCartBadge();
-        if (cartDropdown && cartDropdown.classList.contains('show')) renderCart();
-        if (searchInput) searchInput.focus();
-    };
+   window.addToCart = function (id, nombre, qty) {
+    let cart = JSON.parse(localStorage.getItem('geekwave_cart')) || [];
+    let existingItem = cart.find(item => parseInt(item.id) === parseInt(id));
+    if (existingItem) {
+        existingItem.qty += parseInt(qty);
+    } else {
+        cart.push({ id: id, nombre: nombre, qty: parseInt(qty) });
+    }
+    // A linha mágica: salva E avisa ao pago.js que algo mudou
+    localStorage.setItem('geekwave_cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cartUpdated')); 
+    
+    updateCartBadge();
+    if (cartDropdown && cartDropdown.classList.contains('show')) renderCart();
+};
 
-    window.changeCartQty = function (id, delta) {
-        let cart = JSON.parse(localStorage.getItem('geekwave_cart')) || [];
-        let item = cart.find(i => parseInt(i.id) === parseInt(id));
-        if (item) {
-            item.qty += delta;
-            if (item.qty < 1) item.qty = 1;
-        }
-        localStorage.setItem('geekwave_cart', JSON.stringify(cart));
-        updateCartBadge();
-        renderCart();
-    };
+window.changeCartQty = function (id, delta) {
+    let cart = JSON.parse(localStorage.getItem('geekwave_cart')) || [];
+    let item = cart.find(i => parseInt(i.id) === parseInt(id));
+    if (item) {
+        item.qty += delta;
+        if (item.qty < 1) item.qty = 1;
+    }
+    localStorage.setItem('geekwave_cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cartUpdated'));
+    updateCartBadge();
+    renderCart();
+};
 
-    window.removeFromCart = function (id) {
-        let cart = JSON.parse(localStorage.getItem('geekwave_cart')) || [];
-        cart = cart.filter(i => parseInt(i.id) !== parseInt(id));
-        localStorage.setItem('geekwave_cart', JSON.stringify(cart));
-        updateCartBadge();
-        renderCart();
-        showToast();
-    };
+window.removeFromCart = function (id) {
+    let cart = JSON.parse(localStorage.getItem('geekwave_cart')) || [];
+    cart = cart.filter(i => parseInt(i.id) !== parseInt(id));
+    localStorage.setItem('geekwave_cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cartUpdated'));
+    updateCartBadge();
+    renderCart();
+    showToast();
+};
 
     function renderCart() {
         let cart = JSON.parse(localStorage.getItem('geekwave_cart')) || [];
@@ -724,3 +728,37 @@ function initializeNavbarLogic() {
 
     console.log('✅ Navbar completamente inicializado y listo');
 }
+// En pago.js (y en navbar-global.js)
+function saveCart(cart) {
+    localStorage.setItem("geekwave_cart", JSON.stringify(cart));
+    
+    // Lanzar evento global para que cualquier componente sepa que el carrito cambió
+    window.dispatchEvent(new CustomEvent('cartUpdated', { 
+        detail: { cart: cart } 
+    }));
+}
+// En navbar-global.js, dentro de initializeNavbarLogic:
+window.addEventListener('cartUpdated', (e) => {
+    console.log("Carrito actualizado, refrescando badge...");
+    updateCartBadge();
+});
+
+// En tus funciones de guardado:
+function saveCart(cart) {
+    localStorage.setItem('geekwave_cart', JSON.stringify(cart));
+    
+    // Dispara esto para la misma pestaña
+    window.dispatchEvent(new CustomEvent('cartUpdated')); 
+}
+
+// Y agrega esto en ambos archivos:
+window.addEventListener('cartUpdated', () => {
+    if (typeof renderCheckoutCart === 'function') renderCheckoutCart();
+    if (typeof updateCartBadge === 'function') updateCartBadge();
+});
+window.addEventListener('storage', (e) => {
+    if (e.key === 'geekwave_cart') {
+        if (typeof updateCartBadge === 'function') updateCartBadge();
+        if (typeof renderCart === 'function') renderCart();
+    }
+});
