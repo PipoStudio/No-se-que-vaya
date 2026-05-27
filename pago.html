@@ -3,445 +3,621 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geekwave | High-End Retro Tech</title>
-    
+
+    <title>Checkout | Geekwave</title>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;700&family=Space+Grotesk:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
+
+    <!-- Lenis -->
     <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css">
+
+    <!-- Global -->
     <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Checkout -->
     <link rel="stylesheet" href="css/pago.css">
-    <link rel="stylesheet" href="css/checkout.css">
-    <!-- FIX PARA ACORDEÓN Y CARRITO -->
-    <style>
-        .step-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-        .accordion-icon { transition: transform 0.3s ease; color: #888; }
-        .accordion-step.active .accordion-icon { transform: rotate(180deg); color: #00ff7f; }
-        .step-content { max-height: 0; overflow: hidden; opacity: 0; padding: 0 35px; transition: all 0.4s ease; }
-        .accordion-step.active .step-content { max-height: 2000px; opacity: 1; padding: 25px 35px; overflow: visible; }
-    </style>
 </head>
-  
+
 <body>
 
+    <!-- NAVBAR -->
     <div id="nav-placeholder"></div>
-<!-- Navbar Global -->
-<div id="navbar-container"></div>
 
-<!-- CONTENEDOR PRINCIPAL DEL CHECKOUT -->
-    <main class="checkout-wrapper" style="margin-top: 60px;">
-        <div class="checkout-grid">
-            
-            <!-- COLUMNA IZQUIERDA: ACORDEONES DE DATOS -->
-            <div class="steps-area">
-                
-                <!-- PASO 1: DATOS Y ENVÍO -->
-                <div class="accordion-step active" id="step1">
-                    <div class="step-header" onclick="toggleAccordion('step1')">
-                        <div style="display: flex; align-items: center; gap: 20px;">
-                            <span class="step-number">01</span>
-                            <h3 style="margin:0; font-family:'Space Grotesk'; font-size:1.3rem; letter-spacing:1px;">FACTURACIÓN Y ENVÍO</h3>
-                        </div>
-                        <i data-lucide="chevron-down" class="accordion-icon"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="input-grid">
-                            <div class="field"><label>Nombre Completo *</label><input type="text" id="chk-nombre" class="v-field" placeholder="Ej. Alex Morgan"></div>
-                            <div class="field"><label>Correo Electrónico *</label><input type="email" id="chk-email" class="v-field" placeholder="correo@geekwave.com"></div>
-                        </div>
-                        
-                        <div class="input-grid">
-                            <div class="field"><label>DUI / NIT (Opcional)</label><input type="text" id="chk-doc" class="v-field opcional" placeholder="00000000-0"></div>
-                            <div class="field"><label>Municipio / Ciudad *</label><input type="text" id="chk-ciudad" class="v-field" placeholder="Ej. San Salvador"></div>
-                        </div>
+    <!-- ================================================= -->
+    <!-- CHECKOUT -->
+    <!-- ================================================= -->
 
-                        <div class="field"><label>Dirección Exacta *</label><input type="text" id="chk-direccion" class="v-field" placeholder="Calle, Avenida, Número de casa"></div>
-                        <div class="field"><label>Instrucciones de Entrega (Opcional)</label><input type="text" id="chk-notas" class="v-field opcional" placeholder="Ej. Casa verde portón negro"></div>
-                        
-                        <!-- CONTACTO DEL REPARTIDOR -->
-                        <div class="field">
-                            <label>Contacto para el Repartidor *</label>
-                            <div class="selector-grid" style="grid-template-columns: 1fr 1fr;">
-                                <div class="select-card" onclick="showContactInput('WhatsApp', this)"><i class="fa-brands fa-whatsapp"></i> WhatsApp</div>
-                                <div class="select-card" onclick="showContactInput('SMS', this)"><i class="fa-solid fa-comment-sms"></i> SMS</div>
-                            </div>
-                            
-                            <div id="contact-input-wrapper" style="display: none; margin-top: 15px; padding: 20px; background: rgba(0,255,127,0.05); border-radius: 12px; border: 1px solid var(--accent);">
-                                <label id="contact-label" style="color: var(--accent);">Ingresa tu número</label>
-                                <div style="display: flex; gap: 10px; margin-top: 8px;">
-                                    <input type="tel" id="chk-telefono" class="v-field opcional" placeholder="+503 0000-0000" style="margin:0;">
-                                    <button onclick="saveContactNumber(event)" style="background:var(--accent); color:black; border:none; padding:0 25px; border-radius:12px; font-weight:800; cursor:pointer;">VERIFICAR</button>
-                                </div>
-                                <small id="contact-saved-msg" style="color: var(--accent); display: none; margin-top: 10px; font-weight: 700;"><i data-lucide="check-circle" style="width: 14px; height: 14px; vertical-align: middle;"></i> ¡Número verificado para el envío!</small>
-                            </div>
-                        </div>
+    <main class="checkout-page">
 
-                        <button class="btn-pay ready" onclick="toggleAccordion('step2')" style="background:white; color:black; margin-bottom: 20px;">SELECCIONAR PAGO</button>
-                    </div>
-                </div>
+        <!-- HERO -->
+        <section class="checkout-hero">
 
-                <!-- PASO 2: PASARELA EXTERNA WOMPI -->
-                <div class="accordion-step" id="step2">
-                    <div class="step-header" onclick="toggleAccordion('step2')">
-                        <div style="display: flex; align-items: center; gap: 20px;">
-                            <span class="step-number">02</span>
-                            <h3 style="margin:0; font-family:'Space Grotesk'; font-size:1.3rem; letter-spacing:1px;">MÉTODO DE PAGO</h3>
-                        </div>
-                        <i data-lucide="chevron-down" class="accordion-icon"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="selector-grid">
-                            <div class="select-card active" onclick="selectPayment(this)"><i class="fa-solid fa-credit-card"></i> Tarjeta / Wompi</div>
-                            <div class="select-card" onclick="selectPayment(this)"><i class="fa-brands fa-paypal"></i> PayPal</div>
-                            <div class="select-card" onclick="selectPayment(this)"><i class="fa-brands fa-bitcoin"></i> Crypto</div>
-                        </div>
+            <div class="checkout-hero-content">
 
-                        <div style="background:rgba(255,255,255,0.02); padding:40px 30px; border-radius:16px; border:1px dashed var(--accent); text-align: center; margin-bottom: 30px;">
-                            <i data-lucide="shield-check" style="width: 48px; height: 48px; color: var(--accent); margin-bottom: 15px;"></i>
-                            <h4 style="margin: 0 0 10px 0; font-family: 'Space Grotesk'; font-size: 1.2rem;">ENTORNO SEGURO EXTERNO</h4>
-                            <p style="color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; margin: 0 auto; max-width: 90%;">
-                                Geekwave no almacena datos de tu tarjeta. Al confirmar tu pedido, serás redirigido a la pasarela cifrada de <strong>Banco Agrícola / Wompi</strong> para procesar la transacción.
-                            </p>
-                        </div>
+                <span class="checkout-mini-tag">
+                    CHECKOUT SEGURO
+                </span>
 
-                        <div class="save-container">
-                            <div>
-                                <div style="font-size:1rem; font-weight:700; color:var(--accent);">Recordar mis datos</div>
-                                <div style="font-size:0.8rem; color:var(--text-dim);">Guardar dirección localmente para futuras compras.</div>
-                            </div>
-                            <label class="switch"><input type="checkbox" id="save-info-chk"><span class="slider"></span></label>
-                        </div>
-                    </div>
-                </div>
+                <h1>
+                    Finaliza tu pedido
+                </h1>
+
+                <p>
+                    Tus productos están casi en camino. 
+                    Completa tu información y continúa hacia el pago seguro.
+                </p>
+
             </div>
 
-            <!-- COLUMNA DERECHA: RESUMEN DEL PEDIDO -->
-            <aside class="summary-area">
-                <div class="summary-card">
-                    <div class="summary-header">TU PEDIDO</div>
-                    
-                    <!-- Productos Dinámicos -->
-                    <div id="checkout-cart-items" style="max-height: 450px; overflow-y: auto; padding-right: 10px; margin-bottom: 20px;">
-                        <!-- JS Injects Here -->
-                    </div>
+        </section>
 
-                    <div class="price-calc">
-                        <div class="calc-row"><span>Subtotal</span><span id="calc-subtotal">$0.00</span></div>
-                        <div class="calc-row"><span>Envío Premium</span><span style="color:var(--accent); font-weight:800;">GRATIS</span></div>
-                        <div class="calc-row total"><span>TOTAL</span><span id="calc-total">$0.00</span></div>
-                    </div>
+        <!-- ================================================= -->
+        <!-- GRID -->
+        <!-- ================================================= -->
 
-                    <!-- Botón de Pago Inteligente -->
-                    <button id="mainActionBtn" class="btn-pay" onclick="processExternalPayment()">COMPLETA TUS DATOS</button>
-                    
-                    <div style="text-align:center; margin-top:25px; font-size:0.7rem; color:#444; letter-spacing:1px; font-weight:700; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                        <i data-lucide="lock" style="width: 12px; height: 12px; color:var(--accent);"></i> ENCRIPTACIÓN AES-256
-                    </div>
+        <section class="checkout-container">
+
+            <div class="checkout-grid">
+
+                <!-- ========================================= -->
+                <!-- LEFT -->
+                <!-- ========================================= -->
+
+                <div class="checkout-left">
+
+                    <!-- STEP 1 -->
+                    <article class="checkout-step active" id="step-shipping">
+
+                        <button class="step-toggle" data-step="step-shipping">
+
+                            <div class="step-toggle-left">
+
+                                <span class="step-number">
+                                    01
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Información de envío
+                                    </h2>
+
+                                    <p>
+                                        Datos necesarios para la entrega
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <i data-lucide="chevron-down"></i>
+
+                        </button>
+
+                        <div class="step-content">
+
+                            <!-- GRID -->
+                            <div class="checkout-form-grid">
+
+                                <!-- NOMBRE -->
+                                <div class="checkout-field">
+
+                                    <label>
+                                        Nombre completo
+                                    </label>
+
+                                    <input 
+                                        type="text"
+                                        id="checkout-name"
+                                        class="checkout-input"
+                                        placeholder="Alex Morgan"
+                                        required
+                                    >
+
+                                </div>
+
+                                <!-- EMAIL -->
+                                <div class="checkout-field">
+
+                                    <label>
+                                        Correo electrónico
+                                    </label>
+
+                                    <input 
+                                        type="email"
+                                        id="checkout-email"
+                                        class="checkout-input"
+                                        placeholder="correo@geekwave.com"
+                                        required
+                                    >
+
+                                </div>
+
+                            </div>
+
+                            <!-- GRID -->
+                            <div class="checkout-form-grid compact">
+
+                                <!-- CITY -->
+                                <div class="checkout-field">
+
+                                    <label>
+                                        Ciudad
+                                    </label>
+
+                                    <input 
+                                        type="text"
+                                        id="checkout-city"
+                                        class="checkout-input"
+                                        placeholder="San Salvador"
+                                        required
+                                    >
+
+                                </div>
+
+                                <!-- PHONE -->
+                                <div class="checkout-field">
+
+                                    <label>
+                                        Teléfono
+                                    </label>
+
+                                    <input 
+                                        type="tel"
+                                        id="checkout-phone"
+                                        class="checkout-input"
+                                        placeholder="+503 0000-0000"
+                                        required
+                                    >
+
+                                </div>
+
+                            </div>
+
+                            <!-- ADDRESS -->
+                            <div class="checkout-field">
+
+                                <label>
+                                    Dirección exacta
+                                </label>
+
+                                <input 
+                                    type="text"
+                                    id="checkout-address"
+                                    class="checkout-input"
+                                    placeholder="Calle, avenida y referencia"
+                                    required
+                                >
+
+                            </div>
+
+                            <!-- OPTIONAL -->
+                            <div class="checkout-field">
+
+                                <label>
+                                    Referencia de entrega
+                                    <span>(Opcional)</span>
+                                </label>
+
+                                <input 
+                                    type="text"
+                                    id="checkout-reference"
+                                    class="checkout-input"
+                                    placeholder="Casa blanca, portón negro..."
+                                >
+
+                            </div>
+
+                            <!-- CONTACT -->
+                            <div class="checkout-contact-methods">
+
+                                <button 
+                                    class="contact-method active"
+                                    type="button"
+                                >
+                                    <i data-lucide="message-circle"></i>
+                                    WhatsApp
+                                </button>
+
+                                <button 
+                                    class="contact-method"
+                                    type="button"
+                                >
+                                    <i data-lucide="smartphone"></i>
+                                    SMS
+                                </button>
+
+                            </div>
+
+                            <!-- SAVE -->
+                            <div class="remember-box">
+
+                                <div class="remember-left">
+
+                                    <i data-lucide="shield-check"></i>
+
+                                    <div>
+
+                                        <h4>
+                                            Guardar mis datos
+                                        </h4>
+
+                                        <p>
+                                            Para futuras compras rápidas
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                                <label class="switch">
+
+                                    <input 
+                                        type="checkbox"
+                                        id="remember-data"
+                                    >
+
+                                    <span class="slider"></span>
+
+                                </label>
+
+                            </div>
+
+                            <!-- CONTINUE -->
+                            <button 
+                                class="continue-btn"
+                                type="button"
+                                onclick="toggleAccordion('step-payment')"
+                            >
+                                Continuar al pago
+                            </button>
+
+                        </div>
+
+                    </article>
+
+                    <!-- STEP 2 -->
+                    <article class="checkout-step" id="step-payment">
+
+                        <button class="step-toggle" data-step="step-payment">
+
+                            <div class="step-toggle-left">
+
+                                <span class="step-number">
+                                    02
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Método de pago
+                                    </h2>
+
+                                    <p>
+                                        Selecciona cómo deseas pagar
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <i data-lucide="chevron-down"></i>
+
+                        </button>
+
+                        <div class="step-content">
+
+                            <!-- PAYMENT METHODS -->
+                            <div class="payment-methods">
+
+                                <!-- WOMPI -->
+                                <button 
+                                    class="payment-method active"
+                                    type="button"
+                                    data-payment="wompi"
+                                >
+
+                                    <div class="payment-icon">
+                                        <i data-lucide="credit-card"></i>
+                                    </div>
+
+                                    <div class="payment-info">
+
+                                        <h3>
+                                            Tarjeta / Wompi
+                                        </h3>
+
+                                        <p>
+                                            Visa, Mastercard y más
+                                        </p>
+
+                                    </div>
+
+                                </button>
+
+                                <!-- PAYPAL -->
+                                <button 
+                                    class="payment-method"
+                                    type="button"
+                                    data-payment="paypal"
+                                >
+
+                                    <div class="payment-icon">
+                                        <i data-lucide="wallet"></i>
+                                    </div>
+
+                                    <div class="payment-info">
+
+                                        <h3>
+                                            PayPal
+                                        </h3>
+
+                                        <p>
+                                            Pago rápido y protegido
+                                        </p>
+
+                                    </div>
+
+                                </button>
+
+                            </div>
+
+                            <!-- SECURITY -->
+                            <div class="secure-box">
+
+                                <div class="secure-top">
+
+                                    <i data-lucide="lock"></i>
+
+                                    <h4>
+                                        Pago seguro
+                                    </h4>
+
+                                </div>
+
+                                <p>
+                                    Geekwave no almacena información bancaria. 
+                                    Todos los pagos son procesados de forma cifrada 
+                                    mediante plataformas externas seguras.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
                 </div>
-            </aside>
-        </div>
+
+                <!-- ========================================= -->
+                <!-- RIGHT -->
+                <!-- ========================================= -->
+
+                <aside class="checkout-right">
+
+                    <div class="checkout-summary">
+
+                        <!-- HEADER -->
+                        <div class="summary-top">
+
+                            <div>
+
+                                <span class="summary-mini">
+                                    RESUMEN
+                                </span>
+
+                                <h2>
+                                    Tu pedido
+                                </h2>
+
+                            </div>
+
+                            <div class="summary-badge">
+                                Seguro
+                            </div>
+
+                        </div>
+
+                        <!-- PRODUCTS -->
+                        <div 
+                            class="checkout-products"
+                            id="checkout-products"
+                        >
+                            <!-- JS -->
+                        </div>
+
+                        <!-- COUPON -->
+                        <div class="coupon-box">
+
+                            <input 
+                                type="text"
+                                id="coupon-input"
+                                placeholder="Código de descuento"
+                            >
+
+                            <button 
+                                id="apply-coupon-btn"
+                                type="button"
+                            >
+                                Aplicar
+                            </button>
+
+                        </div>
+
+                        <!-- TOTALS -->
+                        <div class="checkout-totals">
+
+                            <div class="total-row">
+
+                                <span>
+                                    Subtotal
+                                </span>
+
+                                <strong id="checkout-subtotal">
+                                    $0.00
+                                </strong>
+
+                            </div>
+
+                            <div 
+                                class="total-row discount-row"
+                                id="discount-row"
+                            >
+
+                                <span>
+                                    Descuento
+                                </span>
+
+                                <strong id="discount-amount">
+                                    -$0.00
+                                </strong>
+
+                            </div>
+
+                            <div class="total-row">
+
+                                <span>
+                                    Envío
+                                </span>
+
+                                <strong>
+                                    Gratis
+                                </strong>
+
+                            </div>
+
+                            <div class="total-divider"></div>
+
+                            <div class="total-row final">
+
+                                <span>
+                                    Total
+                                </span>
+
+                                <strong id="checkout-total">
+                                    $0.00
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                        <!-- TRUST -->
+                        <div class="trust-features">
+
+                            <div class="trust-item">
+
+                                <i data-lucide="shield-check"></i>
+
+                                <span>
+                                    Pago seguro
+                                </span>
+
+                            </div>
+
+                            <div class="trust-item">
+
+                                <i data-lucide="truck"></i>
+
+                                <span>
+                                    Envío premium
+                                </span>
+
+                            </div>
+
+                            <div class="trust-item">
+
+                                <i data-lucide="badge-check"></i>
+
+                                <span>
+                                    Garantía oficial
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <!-- PAY BUTTON -->
+                        <button 
+                            class="main-pay-btn"
+                            id="main-pay-btn"
+                            onclick="processPayment()"
+                        >
+
+                            <div class="btn-left">
+
+                                <span class="btn-text">
+                                    Completa tus datos
+                                </span>
+
+                            </div>
+
+                            <div class="btn-price">
+                                $0.00
+                            </div>
+
+                        </button>
+
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </section>
+
     </main>
 
-    <!-- OVERLAY TRANSICIÓN WOMPI -->
-    <div id="transition-overlay" class="transition-overlay">
-        <div class="transition-content">
-            <h2 class="transition-text" style="line-height: 1.4;">Cifrando paquete de datos...<br><span style="color: white; font-size: 1.1rem;">Conectando con pasarela Wompi</span></h2>
-            <div class="apple-spinner"></div>
+    <!-- ================================================= -->
+    <!-- OVERLAY -->
+    <!-- ================================================= -->
+
+    <div class="payment-overlay" id="payment-overlay">
+
+        <div class="payment-loader">
+
+            <div class="loader-spinner"></div>
+
+            <h3>
+                Procesando pago
+            </h3>
+
+            <p>
+                Conectando con la pasarela segura...
+            </p>
+
         </div>
+
     </div>
 
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
 
+    <!-- ================================================= -->
+    <!-- SCRIPTS -->
+    <!-- ================================================= -->
 
-  <div id="footer-placeholder"></div>
+   
 
-    <script>
-        // Iniciar Lucide
-        lucide.createIcons();
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Lógica Slider de Videos
-            const videoSlides = document.querySelectorAll('.video-slide');
-            const bars = document.querySelectorAll('.slider-bar');
-            const heroVideos = document.querySelectorAll('.video-slide video');
-            let currentSlide = 0;
-            const slideDuration = 6000;
-            let slideInterval;
-
-            const forcePlayActiveVideo = () => {
-                const activeVideo = heroVideos[currentSlide];
-                if (!activeVideo) return;
-                activeVideo.muted = true;
-                activeVideo.playsInline = true;
-                activeVideo.currentTime = 0;
-                const playPromise = activeVideo.play();
-                if (playPromise && typeof playPromise.catch === 'function') {
-                    playPromise.catch(() => {});
-                }
-            };
-
-            const changeSlide = (index) => {
-                videoSlides[currentSlide].classList.remove('active');
-                bars[currentSlide].classList.remove('active');
-                currentSlide = index;
-                videoSlides[currentSlide].classList.add('active');
-                bars[currentSlide].classList.add('active');
-                forcePlayActiveVideo();
-            };
-
-            const nextSlide = () => changeSlide((currentSlide + 1) % bars.length);
-
-            heroVideos.forEach((video, index) => {
-                video.addEventListener('error', () => {
-                    if (index === currentSlide) {
-                        setTimeout(nextSlide, 250);
-                    }
-                });
-            });
-
-            slideInterval = setInterval(nextSlide, slideDuration);
-            forcePlayActiveVideo();
-
-            bars.forEach((bar, index) => {
-                bar.addEventListener('click', () => {
-                    clearInterval(slideInterval);
-                    changeSlide(index);
-                    slideInterval = setInterval(nextSlide, slideDuration);
-                });
-            });
-
-            // Botón Scroll to Top
-            const scrollTopBtn = document.getElementById('scrollTopBtn');
-            scrollTopBtn.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        });
-    </script>
+     <script src="https://unpkg.com/lucide@latest"></script>
 
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
-    <script>
-        const lenis = new Lenis({ autoRaf: true, duration: 1.8, lerp: 0.08, smoothWheel: true });
-        lucide.createIcons();
-
-        let inventario = [];
-        let isContactSaved = false;
-
-        function getCart() { return JSON.parse(localStorage.getItem('geekwave_cart')) || []; }
-        function saveCart(cart) { localStorage.setItem('geekwave_cart', JSON.stringify(cart)); renderAllCarts(); }
-
-        window.addToCart = function(id, nombre, qty) {
-            let cart = getCart();
-            let item = cart.find(i => parseInt(i.id) === parseInt(id));
-            if (item) item.qty += parseInt(qty);
-            else cart.push({ id, nombre, qty: parseInt(qty) });
-            saveCart(cart);
-            const drop = document.getElementById('cartDropdown');
-            if(drop) drop.classList.add('show');
-        };
-
-        window.changeCartQty = function(id, delta) {
-            let cart = getCart();
-            let item = cart.find(i => parseInt(i.id) === parseInt(id));
-            if(item) { item.qty += delta; if(item.qty < 1) item.qty = 1; }
-            saveCart(cart);
-        };
-
-        window.removeFromCart = function(id) {
-            let cart = getCart();
-            cart = cart.filter(i => parseInt(i.id) !== parseInt(id));
-            saveCart(cart);
-        };
-
-        // --- SINCRONIZACIÓN PERFECTA ---
-        function renderAllCarts() {
-            const cart = getCart();
-            let subtotal = 0;
-            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-
-            const badgeC = document.getElementById('cartBadge');
-            if (badgeC) {
-                if (totalItems > 0) { badgeC.textContent = totalItems; badgeC.classList.add('show'); }
-                else badgeC.classList.remove('show');
-            }
-
-            const navContainer = document.getElementById('cartItemsContainer');
-            if (navContainer) {
-                if (cart.length === 0) navContainer.innerHTML = `<div style="text-align:center; padding:20px; color:#888;">Vacío</div>`;
-                else navContainer.innerHTML = cart.map(item => `<div class="cart-item" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #222;"><span>${item.nombre}</span><span style="color:#00ff7f;">x${item.qty}</span></div>`).join('');
-            }
-
-            const chkContainer = document.getElementById('checkout-cart-items');
-            const mainBtn = document.getElementById('mainActionBtn');
-            if (chkContainer) {
-                if (cart.length === 0) {
-                    chkContainer.innerHTML = `<div style="text-align:center; padding:40px 0; color:#888;">Tu carrito está vacío.</div>`;
-                    if(mainBtn) mainBtn.style.display = 'none';
-                } else {
-                    if(mainBtn) mainBtn.style.display = 'block';
-                    chkContainer.innerHTML = cart.map(item => {
-                        const prod = inventario.find(i => parseInt(i.id) === parseInt(item.id));
-                        if(prod) {
-                            const total = prod.precio_usd * item.qty;
-                            subtotal += total;
-                            return `
-                            <div style="display:flex; align-items:center; gap:15px; background:rgba(255,255,255,0.02); padding:12px; border-radius:12px; margin-bottom:15px; border:1px solid #333;">
-                                <img src="${prod.imagen}" style="width:60px; height:60px; object-fit:cover; border-radius:8px;">
-                                <div style="flex:1;">
-                                    <h4 style="margin:0; font-size:0.95rem; color:white;">${prod.nombre}</h4>
-                                    <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px;">
-                                        <div style="display:flex; align-items:center; gap:10px; background:#0a0a0a; border-radius:6px; padding:4px 8px; border:1px solid #222;">
-                                            <button onclick="changeCartQty(${item.id}, -1)" style="background:none; border:none; color:white; cursor:pointer;">-</button>
-                                            <span style="font-weight:bold; font-size:0.9rem;">${item.qty}</span>
-                                            <button onclick="changeCartQty(${item.id}, 1)" style="background:none; border:none; color:white; cursor:pointer;">+</button>
-                                        </div>
-                                        <div style="color:#00ff7f; font-weight:800;">$${total.toFixed(2)}</div>
-                                    </div>
-                                </div>
-                                <button onclick="removeFromCart(${item.id})" style="background:none; border:none; color:#ff4444; cursor:pointer;"><i data-lucide="trash-2" style="width:18px;"></i></button>
-                            </div>`;
-                        }
-                        return '';
-                    }).join('');
-                }
-            }
-
-            const subtotalEl = document.getElementById('calc-subtotal');
-            const totalEl = document.getElementById('calc-total');
-            if(subtotalEl) subtotalEl.innerText = `$${subtotal.toFixed(2)}`;
-            if(totalEl) totalEl.innerText = `$${subtotal.toFixed(2)}`;
-
-            lucide.createIcons();
-            validateCheckout();
-        }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const res = await fetch('/json/inventario.json');
-                if(!res.ok) throw new Error("Fallo carga");
-                inventario = await res.json();
-                renderAllCarts(); 
-            } catch(e) { console.error("Error BD", e); }
-
-            document.querySelectorAll('.v-field').forEach(i => i.addEventListener('input', validateCheckout));
-            
-            const cartBtn = document.getElementById('cartBtn');
-            const cartDropdown = document.getElementById('cartDropdown');
-            if(cartBtn) cartBtn.addEventListener('click', (e) => { e.stopPropagation(); cartDropdown.classList.toggle('show'); renderAllCarts(); });
-            document.addEventListener('click', (e) => { if(cartDropdown && !cartDropdown.contains(e.target) && !cartBtn.contains(e.target)) cartDropdown.classList.remove('show'); });
-            
-            // Auto rellenar
-            const savedData = JSON.parse(localStorage.getItem('geekwave_user_billing'));
-            if(savedData) {
-                if(document.getElementById('chk-nombre')) document.getElementById('chk-nombre').value = savedData.nombre || '';
-                if(document.getElementById('chk-email')) document.getElementById('chk-email').value = savedData.email || '';
-                if(document.getElementById('chk-direccion')) document.getElementById('chk-direccion').value = savedData.direccion || '';
-                if(document.getElementById('save-info-chk')) document.getElementById('save-info-chk').checked = true;
-            }
-        });
-
-        window.toggleAccordion = function(id) {
-            const step = document.getElementById(id);
-            if(step.classList.contains('active')) step.classList.remove('active');
-            else {
-                document.querySelectorAll('.accordion-step').forEach(s => s.classList.remove('active'));
-                step.classList.add('active');
-            }
-        };
-
-        window.showContactInput = function(type, el) {
-            el.parentElement.querySelectorAll('.select-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('contact-input-wrapper').style.display = 'block';
-            document.getElementById('contact-label').innerText = `Ingresa tu número para ${type}`;
-            isContactSaved = false;
-            document.getElementById('contact-saved-msg').style.display = 'none';
-            validateCheckout();
-        };
-
-        window.saveContactNumber = function(e) {
-            e.preventDefault();
-            if(document.getElementById('chk-telefono').value.length > 5) {
-                isContactSaved = true;
-                document.getElementById('contact-saved-msg').style.display = 'block';
-                validateCheckout();
-            } else { alert("Número inválido"); }
-        };
-
-        window.selectPayment = function(el) {
-            el.parentElement.querySelectorAll('.select-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-        };
-
-        function validateCheckout() {
-            const req = document.querySelectorAll('.v-field:not(.opcional)');
-            let ok = true;
-            req.forEach(i => { if(i.value.trim() === "") ok = false; });
-            if(!isContactSaved) ok = false;
-            
-            const cart = JSON.parse(localStorage.getItem('geekwave_cart')) || [];
-            if(cart.length === 0) ok = false;
-
-            const btn = document.getElementById('mainActionBtn');
-            if(!btn || btn.innerText === "Procesando...") return; 
-
-            if(ok) {
-                btn.classList.add('ready');
-                btn.innerText = "PAGAR EN WOMPI";
-                btn.style.background = "#00ff7f";
-                btn.style.color = "black";
-            } else {
-                btn.classList.remove('ready');
-                btn.innerText = "COMPLETA LOS DATOS";
-                btn.style.background = "#252525";
-                btn.style.color = "#888";
-            }
-        }
-
-        window.processExternalPayment = async function() {
-            const btn = document.getElementById('mainActionBtn');
-            if(!btn.classList.contains('ready')) {
-                toggleAccordion('step1'); 
-                return;
-            }
-
-            document.getElementById('transition-overlay').classList.add('active');
-            btn.innerText = "Procesando...";
-            btn.classList.remove('ready');
-
-            const email = document.getElementById('chk-email').value;
-            const amount = parseFloat(document.getElementById('calc-total').innerText.replace('$','').replace(',',''));
-
-            try {
-                const res = await fetch('/.netlify/functions/process-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, amount })
-                });
-
-                const contentType = res.headers.get("content-type");
-                if (!contentType || !contentType.includes("application/json")) {
-                    throw new Error("Netlify devolvió HTML en vez de la pasarela. La estructura de carpetas falló.");
-                }
-
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.message || "Wompi rechazó la conexión");
-
-                if(data.urlPagoWompi) {
-                    
-                    window.location.href = data.urlPagoWompi; 
-                } else {
-                    throw new Error("Wompi no generó el enlace de pago.");
-                }
-            } catch (err) {
-                console.error(err);
-                alert(" Error: " + err.message);
-                document.getElementById('transition-overlay').classList.remove('active');
-                validateCheckout(); 
-            }
-        };
-    </script>
+    <!-- Shared -->
     <script src="js/component-loader.js"></script>
+      <script src="js/geekwave-main.js" defer></script>
+    
+    <script src="js/navbar-global.js"></script>
+  
+
+
+    <script src="js/pago.js"></script>
+
 </body>
 </html>
