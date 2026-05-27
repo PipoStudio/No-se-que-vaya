@@ -52,9 +52,32 @@
   </div>
 </div>
 
-<script src="js/ofertas.js"></script>
-<script src="js/script.js"></script>
 
-    <script src="js/component-loader.js"></script>
+
+  <div id="footer-placeholder"></div>
+<script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    
+
+<!-- ===== SCRIPTS EN ORDEN CORRECTO ===== -->
+<!-- 1️⃣ PRIMERO: Cargar componentes (navbar + footer) -->
+<script src="js/component-loader.js"></script>
+
+<!-- 2️⃣ SEGUNDO: Scripts que dependen del navbar -->
+<script src="js/navbar-global.js" defer></script>
+
+<!-- 3️⃣ TERCERO: Scripts específicos de la página -->
+<script src="js/geekwave-main.js" defer></script>
+
+  <script src="js/productos.js"></script> 
+
+  <script src="js/ofertas.js"></script>
+
+
+
+    
+
+
+
 </body>
 </html>

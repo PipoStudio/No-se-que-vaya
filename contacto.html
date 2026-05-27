@@ -1,59 +1,70 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>En construcción</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Georgia", "Times New Roman", serif;
-      background-color: #f9f9f9;
-      color: #222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto | Geekwave</title>
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/contacto.css">
 
-    .mensaje {
-      font-size: 3rem;
-      font-weight: bold;
-      text-align: center;
-      max-width: 800px;
-      line-height: 1.4;
-      border-top: 3px solid #222;
-      border-bottom: 3px solid #222;
-      padding: 2rem;
-      background-color: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-  </style>
+    <style>
+        /* Ajuste de diseño para asegurar que el footer siempre esté al fondo */
+        body {
+            margin: 0;
+            padding: 0;
+       
+            background-color: #f9f9f9;
+            color: #222;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column; /* Apila Nav - Mensaje - Footer */
+        }
 
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/contacto.css">
+        .mensaje-container {
+            flex: 1; /* Ocupa todo el espacio disponible */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 0;
+        }
 
+        .mensaje {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            max-width: 800px;
+            line-height: 1.4;
+            border-top: 3px solid #222;
+            border-bottom: 3px solid #222;
+            padding: 2rem;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
-<div id="nav-placeholder"></div>
 
+    <div id="nav-placeholder"></div>
 
-<div class="dropdown-productos"></div>
+    <div class="mensaje-container">
+        <div class="mensaje">
+            Estamos trabajando en ello.<br>
+            Vuelva pronto.<br>
+            ¡Gracias!
+        </div>
+    </div>
 
-  <div class="mensaje">
-    Estamos trabajando en ello.<br>
-    Vuelva pronto.<br>
-    ¡Gracias!
+    <div id="footer-placeholder"></div>
 
-  </div>
-
-<script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
     
-    <script src="js/navbar-global.js"></script>
-    <script src="js/geekwave-main.js"></script>
-
-    <script src="js/productos.js"></script> 
     <script src="js/component-loader.js"></script>
+    
+    <script src="js/navbar-global.js"></script>
+    
+    <script src="js/contacto.js"></script> 
+
 </body>
 </html>
