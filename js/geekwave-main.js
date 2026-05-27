@@ -1,70 +1,83 @@
+/**
+ * GEEKWAVE MAIN - Lógica central de carrito y sincronización
+ */
 
 console.log("[Geekwave] Lógica de Carrito Conectada");
+
+// --- 1. Sincronización de UI ---
 function syncGeekwaveCart() {
     const cart = JSON.parse(localStorage.getItem('geekwave_cart')) || [];
     const saveBtn = document.getElementById('saveCartBtn');
     const itemsContainer = document.getElementById('cartItemsContainer');
     const checkoutBtn = document.querySelector('.cart-footer .btn-primary');
 
-    if (cart.length === 0) {
-        // Estado vacío: invitar a comprar y desactivar guardar
-        if (saveBtn) {
-            saveBtn.disabled = true;
-            saveBtn.textContent = 'No, gracias';
-            saveBtn.classList.add('btn-disabled');
+    // Renderizado de lista (si el contenedor existe)
+    if (itemsContainer) {
+        if (cart.length === 0) {
+            itemsContainer.innerHTML = '<p style="text-align:center;">Tu carrito está vacío</p>';
+        } else {
+            itemsContainer.innerHTML = cart.map((item, index) => `
+                <div class="cart-item">
+                    <span>${item.name}</span>
+                    <span>$${parseFloat(item.price || 0).toFixed(2)}</span>
+                </div>
+            `).join('');
         }
-        if (checkoutBtn) {
-            checkoutBtn.textContent = 'Ir a comprar';
-            checkoutBtn.onclick = () => { window.location.href = 'ofertas.html'; };
-        }
-        if (itemsContainer) {
-            itemsContainer.innerHTML = `
-                <div style="text-align:center; padding:50px; font-family:sans-serif;">
-                    <p style="color:#555; margin-bottom:15px;">Tu carrito está vacío</p>
-                    <a href="ofertas.html" style="color:#00ff7f; font-weight:bold; text-decoration:none; border:1px solid #00ff7f; padding:8px 15px; border-radius:5px;">IR A COMPRAR</a>
-                </div>`;
-        }
-    } else {
-        if (saveBtn) {
-            saveBtn.disabled = false;
-            saveBtn.textContent = 'Guardar';
-            saveBtn.classList.remove('btn-disabled');
-        }
-        if (checkoutBtn) {
-            checkoutBtn.textContent = 'Ir a pagar';
-            checkoutBtn.onclick = () => { window.location.href = 'pago.html'; };
-        }
+    }
+
+    // Lógica de estados de botones (sin deformar el diseño)
+    if (saveBtn) {
+        saveBtn.disabled = (cart.length === 0);
+        saveBtn.textContent = (cart.length === 0) ? 'No, gracias' : 'Guardar';
+        cart.length === 0 ? saveBtn.classList.add('btn-disabled') : saveBtn.classList.remove('btn-disabled');
+    }
+
+    if (checkoutBtn) {
+        // Solo cambiamos el texto, manteniendo la estructura original
+        checkoutBtn.textContent = (cart.length === 0) ? 'Ir a comprar' : 'Ir a pagar';
+        checkoutBtn.onclick = () => { window.location.href = (cart.length === 0) ? 'ofertas.html' : 'pago.html'; };
     }
 }
 
-document.addEventListener('DOMContentLoaded', syncGeekwaveCart);
+// --- 2. Lógica de Agregar al Carrito ---
+window.addToCart = (id, name, price) => {
+    let cart = JSON.parse(localStorage.getItem('geekwave_cart')) || [];
+    cart.push({ id, name, price: parseFloat(price) });
+    localStorage.setItem('geekwave_cart', JSON.stringify(cart));
+    
+    console.log(`✅ Producto ${name} agregado ($${price})`);
+    syncGeekwaveCart();
+};
+
+// --- 3. Vinculación de eventos a botones HTML ---
+function bindCartEvents() {
+    const botones = document.querySelectorAll('.btn-comprar');
+    botones.forEach(btn => {
+        // Usamos una función anónima para evitar problemas con 'this'
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const price = btn.getAttribute('data-price');
+            window.addToCart(id, name, price);
+        });
+    });
+}
+
+// --- 4. Inicialización (Escucha al cargador de componentes) ---
+document.addEventListener('navbarLoaded', () => {
+    console.log("🚀 Geekwave Main: Navbar listo, sincronizando...");
+    syncGeekwaveCart();
+    bindCartEvents();
+});
+
 window.addEventListener('storage', syncGeekwaveCart);
 
-
-// js/geekwave-main.js
-
+// --- 5. Lógica de Juegos ---
 async function registrarPartidaDiaria() {
-    // 1. Obtenemos el usuario actual de Supabase
     const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        alert("¡Inicia sesión para ganar puntos de racha!");
-        return;
-    }
-
-    // 2. Llamamos a la función SQL que creamos antes
-    const { data, error } = await supabase.rpc('registrar_partida_y_actualizar_racha', {
-        user_id_param: user.id
-    });
-
-    if (error) {
-        console.error("Error al registrar racha:", error);
-        return;
-    }
-
-    // 3. Si la función nos devuelve un tipo de premio, disparar el correo
-    const tipoPremio = data[0].enviar_correo_tipo;
-    if (tipoPremio !== 'NINGUNO') {
-        notificarAEmail(user.email, tipoPremio);
+    if (!user) return;
+    const { data, error } = await supabase.rpc('registrar_partida_y_actualizar_racha', { user_id_param: user.id });
+    if (!error && data && data[0].enviar_correo_tipo !== 'NINGUNO') {
+        notificarAEmail(user.email, data[0].enviar_correo_tipo);
     }
 }
